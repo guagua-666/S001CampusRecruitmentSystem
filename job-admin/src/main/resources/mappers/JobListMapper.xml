@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.ludonghuang.mapper.JobListMapper">
+
+    <resultMap type="top.ludonghuang.entity.JobList" id="JobList">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="job_date" property="jobDate"/>
+        <result column="job_place" property="jobPlace"/>
+        <result column="job_company" property="jobCompany"/>
+        <result column="father_id" property="fatherId"/>
+        <result column="job_url" property="jobUrl"/>
+
+    </resultMap>
+
+    <insert id="create" keyProperty="id" useGeneratedKeys="true" parameterType="JobList">
+		insert into tb_joblist(
+            name,
+            job_date,
+            job_place,
+            job_company,
+            father_id
+		)values(
+			#{name},
+			#{jobDate},
+			#{jobPlace},
+			#{jobCompany},
+			#{fatherId}
+		)
+	</insert>
+
+    <delete id="delete">
+		delete from tb_joblist where id = #{id}
+	</delete>
+
+    <update id="update">
+        update tb_joblist set
+        <if test="name != null and name != ''">name = #{name},</if>
+        <if test="jobDate != null">job_date = #{jobDate},</if>
+        <if test="jobPlace != null and jobPlace != ''">job_place = #{jobPlace},</if>
+        <if test="jobCompany != null and jobCompany != ''">job_company = #{jobCompany}</if>
+        where id = #{id}
+    </update>
+
+    <select id="query" resultMap="JobList">
+        select * from tb_joblist where father_id=0 or father_id=' ' or father_id=0 or father_id=null
+        <include refid="ExperienceFindCriteria"/>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(1) from tb_joblist
+        <include refid="ExperienceFindCriteria"/>
+    </select>
+
+    <select id="detail" resultMap="JobList">
+		select * from tb_joblist where id = #{id}
+	</select>
+
+    <sql id="ExperienceFindCriteria">
+        <where>
+            <if test="id != null">and id = #{id}</if>
+            <if test="name != null and name != ''">and name like concat('%', #{name}, '%')</if>
+            <if test="jobDate != null">and job_date = #{jobDate}</if>
+            <if test="jobPlace != null">and job_place = #{jobPlace}</if>
+            <if test="jobCompany != null">and job_company = #{jobCompany}</if>
+            <if test="fatherId != null">and father_id = #{fatherId}</if>
+        </where>
+    </sql>
+
+    <select id="getByIdQuery" resultMap="JobList">
+        select * from tb_joblist where father_id = #{id}
+    </select>
+
+</mapper>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.ludonghuang.mapper.StuJobInfoMapper">
+
+    <resultMap type="top.ludonghuang.entity.StuJobInfo" id="StuJobInfo">
+        <id column="id" property="id"/>
+        <result column="stu_id" property="stuId"/>
+        <result column="name" property="name"/>
+        <result column="grade" property="grade"/>
+        <result column="stu_no" property="stuNo"/>
+        <result column="employment" property="employment"/>
+        <result column="company_name" property="companyName"/>
+        <result column="company_type" property="companyType"/>
+        <result column="post" property="post"/>
+        <result column="salary" property="salary"/>
+    </resultMap>
+
+    <insert id="create" keyProperty="id" useGeneratedKeys="true" parameterType="StuJobInfo">
+		insert into tb_stu_job_info(
+            stu_id,
+			name,
+            grade,
+            stu_no,
+            employment,
+            company_name,
+            company_type,
+            post,
+            salary
+		)values(
+            #{stuId},
+			#{name},
+			#{grade},
+			#{stuNo},
+			#{employment},
+			#{companyName},
+			#{companyType},
+			#{post},
+			#{salary}
+		)
+	</insert>
+
+    <delete id="delete">
+		delete from tb_stu_job_info where id = #{id}
+	</delete>
+
+    <update id="update">
+        update tb_stu_job_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="stuId != null and stuId != ''">stu_id = #{stuId},</if>
+            <if test="grade != null and grade != ''">grade = #{grade},</if>
+            <if test="stuNo != null and stuNo != ''">stu_no = #{stuNo},</if>
+            <if test="employment != null and employment != ''">employment = #{employment},</if>
+            <if test="companyName != null and companyName != ''">company_name = #{companyName},</if>
+            <if test="companyType != null and companyType != ''">company_type = #{companyType},</if>
+            <if test="post != null and post != ''">post = #{post},</if>
+            <if test="salary != null and salary != ''">salary = #{salary},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="query" resultMap="StuJobInfo">
+        select * from tb_stu_job_info
+        <include refid="StuJobInfoFindCriteria"/>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(1) from tb_stu_job_info
+        <include refid="StuJobInfoFindCriteria"/>
+    </select>
+
+    <select id="detail" resultMap="StuJobInfo">
+		select * from tb_stu_job_info where id = #{id}
+	</select>
+
+    <select id="detailByStuId" resultMap="StuJobInfo">
+		select * from tb_stu_job_info where stu_id = #{stuId}
+	</select>
+
+    <sql id="StuJobInfoFindCriteria">
+        <where>
+            <if test="id != null">and id = #{id}</if>
+            <if test="stuId != null">and stu_id = #{stuId}</if>
+            <if test="name != null and name != ''">and name like concat('%',#{name},'%')</if>
+            <if test="grade != null and grade != ''">and grade = #{grade}</if>
+            <if test="stuNo != null and stuNo != ''">and stu_no = #{stuNo}</if>
+            <if test="employment != null and employment != ''">and employment = #{employment}</if>
+            <if test="companyName != null and companyName != ''">and company_name like concat('%',#{companyName},'%')</if>
+            <if test="companyType != null and companyType != ''">and company_type = #{companyType}</if>
+            <if test="salary != null and salary != ''">and salary = #{salary}</if>
+        </where>
+    </sql>
+
+</mapper>
